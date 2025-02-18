@@ -9,6 +9,16 @@ def get_books(db: Session):
 def get_book(db: Session, book_id: str):
     return db.query(Book).filter(Book.id == book_id).first()
 
+def create_book(db: Session, book: BookCreate):
+    db_book = Book (
+        title=book.title, author=book.author,
+        published_year=book.published_year,
+        isbn=book.isbn,price=book.price )
+    db.add(db_book)
+    db.commit()
+    db.refresh(db_book)
+    return db_book
+
 def update_book(db: Session, book_id: str, book: BookCreate):
     db_book = db.query(Book).filter(Book.id == book_id).first()
     if db_book: 
@@ -22,18 +32,10 @@ def update_book(db: Session, book_id: str, book: BookCreate):
         db.refresh(db_book)
     return db_book
 
-"""def create_book(db: Session, book: BookCreate):
-    db_book = Book (
-        title=book.title, author=book.author,
-        published_year=book.published_year,
-        isbn=book.isbn,price=book.price )
-    db.add(db_book)
-    db.commit()
-    db.refresh(db_book)
-    return db_book
 
 
-def update_book(db: Session, book_id: str, book: BookCreate):
+
+"""def update_book(db: Session, book_id: str, book: BookCreate):
     db_book = db.query(Book).filter(Book.id == book_id).first()
     db_book= Book ( title = book.title,author = book.author,published_year = book.published_year,
                    isbn = book.isbn,price = book.price)
