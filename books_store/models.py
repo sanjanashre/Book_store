@@ -16,4 +16,3 @@ class Book(Base):
     isbn = Column(String(13), nullable=True, unique=True)
     price = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
-

@@ -32,4 +32,3 @@ class BookResponse(BookBase):
         )
 
        
-
