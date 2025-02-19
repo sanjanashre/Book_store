@@ -1,23 +1,32 @@
-from pydantic import BaseModel,UUID4
-from typing import Optional
 from datetime import datetime
 from uuid import UUID
 
-class BookBase(BaseModel):
+from pydantic import BaseModel, UUID4
+
+
+class BaseDetailSchema(BaseModel):
+    detail: str
+
+
+class BaseBookSchema(BaseModel):
     title: str
     author: str
     published_year: int
     isbn: str
     price: int
-   
-class BookCreate(BookBase):
+
+
+class AddBookRequestSchema(BaseBookSchema):
     pass
-class BookResponse(BookBase):
+
+
+class BookResponse(BaseBookSchema):
     id: UUID
     created_at: datetime
 
     class Config:
         from_attribute = True
+
     @classmethod
     def from_orm(cls, obj):
         """Manually convert UUID to a string."""
@@ -30,5 +39,3 @@ class BookResponse(BookBase):
             price=obj.price,
             created_at=obj.created_at
         )
-
-       
