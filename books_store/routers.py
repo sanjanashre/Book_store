@@ -13,7 +13,18 @@ router = APIRouter()
 
 @router.get("/books", response_model=list[RetrieveBooksSchema])
 def read_books(payload: RetrieveBooksSchema, db: session = Depends(get_db)):
-    """List books"""
+    """
+    Retrieves all book entries from the database.
+
+    This function handles the HTTP GET request to fetch all books stored in the database.
+    If books are found, a list of book details is returned. If no books exist, an empty list is returned.
+
+    Parameters:
+        db (Session): The database session dependency used to interact with the database.
+
+    Returns:
+        List[RetrieveBooksSchema]: A list of response models containing the details of all books.
+    """
     get_all_books = RetrieveAllBooks(session=db,payload=payload)
     get_all_books.run()
 
@@ -120,11 +131,32 @@ def get_book(book_id,payload:RetrieveBooksSchema, db : session = Depends(get_db)
 
 @router.delete("/books/{book_id}",response_model=RetrieveBooksSchema )
 def delete_book(book_id,payload:RetrieveBookDetails, db: session = Depends(get_db)):
-    """Delete book"""
+    """ Deletes a book entry from the database using the provided book ID.
+
+    This function handles the HTTP DELETE request to remove a book from the database.
+    It queries the database for the book based on the given ID. If the book is found,
+    it is deleted from the database. If the book does not exist, an HTTP exception is raised.
+
+    Parameters:
+        book_id (int): The unique identifier of the book to be deleted.
+        db (Session): The database session dependency used to interact with
+        the database.
+
+    Raises:
+        HTTPException: Raised when the book is not found.
+
+    Returns:
+        RetrieveBooksSchema: A response model containing the details of the 
+        deleted book."""
     try:
         Delete_Book_Service = DeleteBook(session=db, payload=payload,book_id=book_id) 
         Delete_Book_Service.run()  
         return {"Successfully deleted"}
     except Exception as e:
         raise HTTPException(status_code=404,detail=str(e))
+    
+
+
+
+   
     
