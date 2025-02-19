@@ -7,7 +7,7 @@ from pydantic import BaseModel, UUID4
 class BaseDetailSchema(BaseModel):
     detail: str
 
-
+    
 class BaseBookSchema(BaseModel):
     title: str
     author: str
@@ -20,7 +20,7 @@ class AddBookRequestSchema(BaseBookSchema):
     pass
 
 
-class BookResponse(BaseBookSchema):
+class RetrieveBooksSchema(BaseBookSchema):
     id: UUID
     created_at: datetime
 

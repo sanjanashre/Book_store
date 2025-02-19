@@ -47,8 +47,11 @@ def update_book(db: Session, book_id: str, book: BookCreate):
     return db_book"""
 
 
+
 def delete_book(db: Session, book_id: str):
     book = db.query(Book).filter(Book.id == book_id).first()
     if book:
         db.delete(book)
         db.commit()
+
+    

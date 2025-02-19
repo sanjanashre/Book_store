@@ -1,18 +1,21 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import session
-
+from books_store.services.update_book import UpdateBookService
 from books_store.database import get_db
-from books_store.schemas import AddBookRequestSchema, BaseDetailSchema
+from books_store.schemas import AddBookRequestSchema, BaseDetailSchema,RetrieveBooksSchema
 from books_store.services.add_book import AddBookService
+from books_store.services.Retrieve_book import RetrieveBookDetails
+from books_store.services.delete_book import DeleteBook
+from books_store.services.Retrieve_all_books import RetrieveAllBooks
 
 router = APIRouter()
 
 
-@router.get("/books", response_model=list[schemas.BookResponse])
-def read_books(db: session = Depends(get_db)):
+@router.get("/books", response_model=list[RetrieveBooksSchema])
+def read_books(payload: RetrieveBooksSchema, db: session = Depends(get_db)):
     """List books"""
-    books = crud.get_books(db)
-    return [schemas.BookResponse.from_orm(book) for book in books]
+    get_all_books = RetrieveAllBooks(session=db,payload=payload)
+    get_all_books.run()
 
 
 @router.post("/books", response_model=AddBookRequestSchema)
@@ -53,23 +56,75 @@ def create_new_book(payload: AddBookRequestSchema, db: session = Depends(get_db)
     return BaseDetailSchema(detail="Book added successfully.")
 
 
-@router.get("/books/{book_id}", response_model=schemas.BookResponse)
-def get_book(book_id: str, db: session = Depends(get_db)):
-    """Retrieve book by ID"""
-    return crud.get_book(db, book_id)
+
+@router.put("/books/{book_id}", response_model=AddBookRequestSchema)
+def update_book(book_id,payload: AddBookRequestSchema, db: session = Depends(get_db)):
+    """Updates an existing book entry in the database using the provided payload data.
+
+    This function is responsible for handling the HTTP PUT/PATCH request to update
+    an existing book. It retrieves the book by its ID, applies the necessary updates,
+    and commits the changes. If the book is not found, or if an error occurs during 
+    the update process, an HTTP exception is raised.
+
+    Parameters:
+        book_id (int): The unique identifier of the book to be updated.
+        payload (ReceiveBooksSchema): The schema containing the updated data 
+        for the book.
+        db (Session): The database session dependency used to interact with
+        the database.
+
+    Raises:
+        HTTPException: Raised when the book is not found or an error occurs 
+        while committing the transaction.
+
+    Returns:
+        BaseDetailSchema: A response model indicating the book has been 
+        successfully updated.
+    """
+    update_book_service = UpdateBookService(session=db, payload=payload,book_id=book_id)
+    update_book_service.run()
+     
+    try :
+       db.commit 
+    except :
+       raise HTTPException(status_code= 404,detail="Book not found")
+    
+    return BaseDetailSchema(detail="Book updated")   
+
+@router.get("/books/{book_id}", response_model=RetrieveBooksSchema)
+def get_book(book_id,payload:RetrieveBooksSchema, db : session = Depends(get_db)):
+    """Retrieves a book entry from the database using the provided book ID.
+
+    This function handles the HTTP GET request to fetch book details. It queries
+    the database for the book based on the given ID. If the book is found, its 
+    details are returned. If the book does not exist, an HTTP exception is raised.
+
+    Parameters:
+        book_id (int): The unique identifier of the book to be retrieved.
+        db (Session): The database session dependency used to interact with
+        the database.
+
+    Raises:
+        HTTPException: Raised when the book is not found.
+
+    Returns:
+        RetrieveBooksSchema: A response model containing the details of the 
+        retrieved book.
+    """
+
+    Retrieve_Book_Service = RetrieveBookDetails(session=db, payload=payload,book_id=book_id)
+    Retrieve_Book_Service.run()
 
 
-@router.put("/books/{book_id}", response_model=schemas.BookResponse)
-def update_book(book_id: str, book: schemas.BookCreate, db: session = Depends(get_db)):
-    return crud.update_book(db, book_id, book)
 
 
-@router.delete("/books/{book_id}", response_model=schemas.BookResponse)
-def delete_book(book_id: str, db: session = Depends(get_db)):
+@router.delete("/books/{book_id}",response_model=RetrieveBooksSchema )
+def delete_book(book_id,payload:RetrieveBookDetails, db: session = Depends(get_db)):
     """Delete book"""
-    book = crud.get_book(db, book_id)
-
-    if book:
-        crud.delete_book(db, book_id)
-        return book
-    return None
+    try:
+        Delete_Book_Service = DeleteBook(session=db, payload=payload,book_id=book_id) 
+        Delete_Book_Service.run()  
+        return {"Successfully deleted"}
+    except Exception as e:
+        raise HTTPException(status_code=404,detail=str(e))
+    

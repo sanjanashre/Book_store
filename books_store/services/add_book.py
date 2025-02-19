@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from books_store.models import Book
 from books_store.schemas import AddBookRequestSchema
 
-
 class AddBookService:
     """
     Service class to add a book in the database.
