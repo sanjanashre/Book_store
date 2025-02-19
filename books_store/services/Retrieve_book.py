@@ -1,20 +1,24 @@
 from fastapi import HTTPException, status
-from database import session
+from sqlalchemy.orm import Session
 from books_store.schemas import RetrieveBooksSchema
 from books_store.models import Book
 
 
 class RetrieveBookDetails:
     """Service class to retrieve book details from the database."""
-    def __init__(self,session:session,payload:RetrieveBooksSchema,book_id:int):
+    def __init__(self,session:Session,payload:RetrieveBooksSchema,book_id:int):
         """
         Constructor for RetrieveBookDetails 
         """
         self.session=session
         self.payload=payload
         self.book_id=book_id
+
+    def Retrieve_all(self)-> Book:
+          """Retrieves all the list of all books """
+          return self.session.query(Book).all()
     
-    def Retrieve_book(self)-> Book:
+    def retrieve_book(self)-> Book:
          
         """Retrieves a book by its ID.
            Returns:
