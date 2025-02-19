@@ -1,1 +1,10 @@
-alembic.ini
+venv
+code/.pytest_cache
+.idea
+.env
+app/__pycache__
+app/*/__pycache__
+.vscode
+__pycache__/
+*.py[cod]
+*$py.class
