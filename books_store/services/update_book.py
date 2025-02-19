@@ -11,9 +11,9 @@ class UpdateBookService:
         self.book_id = book_id
 
     def get_book_from_id(self) -> Book:
-       """
-       Query book from database. If not found return exception
-       """
+        """
+        Query book from database. If not found return exception
+        """
 
     def update_book(self, book):
         """
@@ -21,6 +21,6 @@ class UpdateBookService:
         """
 
     def run(self):
-       """
-       Use this as a runner function
-       """
+        """
+        Use this as a runner function
+        """
