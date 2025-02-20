@@ -14,7 +14,7 @@ class RetrieveBookDetails:
         self.payload=payload
         self.book_id=book_id
 
-    def Retrieve_all(self)-> Book:
+    def retrieve_all(self)-> Book:
           """Retrieves all the list of all books """
           return self.session.query(Book).all()
     
@@ -27,7 +27,7 @@ class RetrieveBookDetails:
 
     def run(self):
         """Runner function to execute the retrieval operation."""
-        self.Retrieve_book()
+        self.retrieve_book()
 
 
 

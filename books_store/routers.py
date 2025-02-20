@@ -2,11 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import session
 from books_store.services.update_book import UpdateBookService
 from books_store.database import get_db
-from books_store.schemas import AddBookRequestSchema, BaseDetailSchema,RetrieveBooksSchema
+from books_store.schemas import AddBookRequestSchema, BaseDetailSchema,RetrieveBooksSchema,AddLibraryBookSchema
 from books_store.services.add_book import AddBookService
-from books_store.services.Retrieve_book import RetrieveBookDetails
+from books_store.services.retrieve_book import RetrieveBookDetails
 from books_store.services.delete_book import DeleteBook
-from books_store.services.Retrieve_all_books import RetrieveAllBooks
+from books_store.schemas import AddLibrarySchema,RetrieveLibrarySchema
+from books_store.library_services.add_library import AddLibrary
+from books_store.library_services.retrieve_library import RetrieveLibraryDetails
 
 router = APIRouter()
 
@@ -25,7 +27,7 @@ def read_books(payload: RetrieveBooksSchema, db: session = Depends(get_db)):
     Returns:
         List[RetrieveBooksSchema]: A list of response models containing the details of all books.
     """
-    get_all_books = RetrieveAllBooks(session=db,payload=payload)
+    get_all_books = RetrieveBookDetails(session=db,payload=payload)
     get_all_books.run()
 
 
@@ -158,5 +160,26 @@ def delete_book(book_id,payload:RetrieveBookDetails, db: session = Depends(get_d
 
 
 
-   
-    
+@router.post("/library", response_model=AddLibrarySchema)
+def add_library(payload:AddLibrarySchema,db:session=Depends(get_db)):
+    """ Adds library details
+    """
+
+    add_library=AddLibrary(session=db,payload=payload)
+    add_library.add_library_run()
+
+    try:
+        db.commit()
+    except:
+        raise HTTPException(status_code=404,detail="book is not added")
+
+
+@router.post("/library",response_model=RetrieveLibrarySchema)
+def retrieve_library(library_id,payload:RetrieveLibrarySchema,db:session=Depends(get_db)):
+    """retrieve details library details
+    """
+    retrieve_library=RetrieveLibraryDetails(session=db,payload=payload,library_id=library_id)
+    retrieve_library.run()
+
+@router.post("/librarybooks",response_model=AddLibraryBookSchema)
+def add_library_books(book_id)
