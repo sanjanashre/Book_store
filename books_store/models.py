@@ -2,7 +2,7 @@
 from sqlalchemy import Column, String, Integer, Float
 from books_store.database import Base
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import DateTime,ForeignKey
+from sqlalchemy import DateTime, ForeignKey
 from datetime import datetime
 from sqlalchemy.orm import relationship
 import uuid
@@ -18,44 +18,30 @@ class Book(Base):
     isbn = Column(String(13), nullable=True, unique=True)
     price = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
-    library_id = Column(String(255), nullable=True)
-    
-    #relationships for library & librarybooks
-
-    libraryBooks = relationship("LibararyBooks",back_populates="book")
-    libraries = relationship("Library",back_populates="books") 
 
 
 class Library(Base):
     __tablename__ = "libraries"
 
-    id = Column(String(225),primary_key=True,default=uuid.uuid4)
-    name = Column(String,nullable=False)
-    address_line_one = Column(String,nullable=False) 
-    address_line_two = Column(String,nullable=False)
-    city = Column(String,nullable=False)
-    state = Column(String,nullable=False)
-    country = Column(String,nullable=False)
-    zip_code = Column(Integer,nullable=False)
+    id = Column(String(225), primary_key=True, default=uuid.uuid4)
+    name = Column(String, nullable=False)
+    address_line_one = Column(String, nullable=False)
+    address_line_two = Column(String, nullable=False)
+    city = Column(String, nullable=False)
+    state = Column(String, nullable=False)
+    country = Column(String, nullable=False)
+    zip_code = Column(Integer, nullable=False)
 
-    #relationships for books & librarybooks
-
-    books = relationship("Book",back_populates="libraries")
-    librarybooks = relationship("LibraryBooks",back_populates="library")
 
 class LibraryBooks(Base):
-    __tablename__ = "librarybooks"
+    __tablename__ = "library_books"
 
-    id = Column(String(225),primary_key=True,default=uuid.uuid4)
-    book_id =  Column(String(225),ForeignKey("books.id"))
-    library_id = Column(String(225),ForeignKey("libraries.id"))
+    id = Column(String(225), primary_key=True, default=uuid.uuid4)
+    book_id = Column(String(225), ForeignKey("books.id"))
+    library_id = Column(String(225), ForeignKey("libraries.id"))
 
-    # relationship for books and library table 
-
-    book = relationship("Book",back_populates="librarybooks")
-    library = relationship("Library",back_populates="librarybooks")
-    
-
+    book = relationship("Book", foreign_keys=[book_id])
+    library = relationship("Library", foreign_keys=[library_id])
 
 
 # TODO:

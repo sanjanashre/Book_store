@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import session
 from books_store.services.update_book import UpdateBookService
 from books_store.database import get_db
-from books_store.schemas import AddBookRequestSchema, BaseDetailSchema,RetrieveBooksSchema,AddLibraryBookSchema
+from books_store.schemas import AddBookRequestSchema, BaseDetailSchema, \
+    RetrieveBooksSchema, AddLibraryBookSchema, RetrieveLibraryBookSchema
 from books_store.services.add_book import AddBookService
 from books_store.services.retrieve_book import RetrieveBookDetails
 from books_store.services.delete_book import DeleteBook
@@ -181,5 +182,26 @@ def retrieve_library(library_id,payload:RetrieveLibrarySchema,db:session=Depends
     retrieve_library=RetrieveLibraryDetails(session=db,payload=payload,library_id=library_id)
     retrieve_library.run()
 
-@router.post("/librarybooks",response_model=AddLibraryBookSchema)
-def add_library_books(book_id)
+@router.post("/libraries/{library_id}/books",response_model=AddLibraryBookSchema)
+def add_library_books():
+    pass
+
+
+@router.get("/libraries/{library_id}/books",response_model=list[RetrieveLibraryBookSchema])
+def list_library_books():
+    pass
+
+[
+    {
+        id: UUID
+        book: RetrieveBooksSchema
+    },
+{
+        id: UUID
+        book: RetrieveBooksSchema
+    },
+{
+        id: UUID
+        book: RetrieveBooksSchema
+    }
+]
