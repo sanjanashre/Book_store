@@ -12,16 +12,16 @@ class AddLibrary:
         self.payload=payload
     
     def add_library_run(self) ->None:
-        library = Library(
-            id=self.payload.id
+        library = Library (
             name = self.payload.name ,
             address_line_one =self.payload.address_line_one,
             address_line_two=self.payload.address_line_two,
             city = self.payload.city,
             state = self.payload.state,
             country = self.payload.country,
-            zip_code= self.payload.zip_code
-)
+            zip_code= self.payload.zip_code  
+            )
+        
         self.session.add(library)
         self.session.refresh()
 

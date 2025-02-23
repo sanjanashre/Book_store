@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from database import session
+from sqlalchemy.orm import session
 from books_store.schemas import RetrieveBooksSchema
 from books_store.models import Book
 

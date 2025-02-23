@@ -15,5 +15,4 @@ class RetrieveAllBooks:
     def run(self):
         self.retrieve_all_books()
 
-    
-    
+

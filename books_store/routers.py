@@ -65,6 +65,7 @@ def create_new_book(payload: AddBookRequestSchema, db: session = Depends(get_db)
             detail="Something went wrong.",
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+    
 
     return BaseDetailSchema(detail="Book added successfully.")
 
@@ -171,7 +172,7 @@ def add_library(payload:AddLibrarySchema,db:session=Depends(get_db)):
     try:
         db.commit()
     except:
-        raise HTTPException(status_code=404,detail="book is not added")
+        raise HTTPException(status_code=404,detail="Library is not added")
 
 
 @router.post("/library",response_model=RetrieveLibrarySchema)
@@ -182,4 +183,13 @@ def retrieve_library(library_id,payload:RetrieveLibrarySchema,db:session=Depends
     retrieve_library.run()
 
 @router.post("/librarybooks",response_model=AddLibraryBookSchema)
-def add_library_books(book_id)
+def add_library_books ( payload:RetrieveLibrarySchema,db:session=Depends(get_db)):
+
+    add_library_book=AddLibrary(session=db,payload=payload),
+    add_library_book.add_library_run()
+
+    try:
+        db.commit()
+    except:
+        raise HTTPException(status_code=404,detail="library not found")
+    
