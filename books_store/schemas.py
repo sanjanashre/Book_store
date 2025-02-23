@@ -7,7 +7,7 @@ from pydantic import BaseModel, UUID4
 class BaseDetailSchema(BaseModel):
     detail: str
 
-    
+
 class BaseBookSchema(BaseModel):
     title: str
     author: str
@@ -37,36 +37,39 @@ class RetrieveBooksSchema(BaseBookSchema):
             published_year=obj.published_year,
             isbn=obj.isbn,
             price=obj.price,
-            created_at=obj.created_at
+            created_at=obj.created_at,
         )
-    
-        """Schema for adding library 
-        """
+
+
 class LibraryRequestSchema(BaseModel):
     name: str
-    address_line_one:str
-    address_line_two:str
-    city:str
-    state:str
-    country:str
-    zip_code:int
+    address_line_one: str
+    address_line_two: str
+    city: str
+    state: str
+    country: str
+    zip_code: int
+
 
 class AddLibrarySchema(LibraryRequestSchema):
     pass
+
+
 class RetrieveLibrarySchema(LibraryRequestSchema):
-    id:UUID
+    id: UUID
 
     """Schemas for adding book in the Library
     """
+
+
 class LibraryBookRequestSchema(BaseModel):
-    id:UUID
-    
+    id: UUID
+
+
 class AddLibraryBookSchema(LibraryBookRequestSchema):
-    book_id:UUID
-    library_id:UUID
-
-class RetrieveLibraryBookSchema(AddLibraryBookSchema):
-    pass 
+    book_id: list[UUID]
 
 
-
+class RetrieveLibraryBookSchema(BaseModel):
+    id: UUID
+    book: RetrieveBooksSchema
