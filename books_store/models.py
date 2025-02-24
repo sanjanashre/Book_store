@@ -19,11 +19,12 @@ class Book(Base):
     price = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
 
+    libraries = relationship("LibraryBooks", back_populates="book")
 
-"""class Library(Base):
+class Library(Base):
     __tablename__ = "libraries"
 
-    id = Column(String(225), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String, nullable=False)
     address_line_one = Column(String, nullable=False)
     address_line_two = Column(String, nullable=False)
@@ -32,16 +33,18 @@ class Book(Base):
     country = Column(String, nullable=False)
     zip_code = Column(Integer, nullable=False)
 
-
+    books = relationship("LibraryBooks", back_populates="library")
 class LibraryBooks(Base):
     __tablename__ = "library_books"
 
-    id = Column(String(225), primary_key=True, default=uuid.uuid4)
-    book_id = Column(String(225), ForeignKey("books.id"))
-    library_id = Column(String(225), ForeignKey("libraries.id"))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    book_id = Column(UUID(as_uuid=True), ForeignKey("books.id"), nullable=False)
+    library_id = Column(UUID(as_uuid=True), ForeignKey("libraries.id"), nullable=False)
 
-    book = relationship("Book", foreign_keys=[book_id])
-    library = relationship("Library", foreign_keys=[library_id])
+    # book = relationship("Book", foreign_keys=[book_id])
+    #library = relationship("Library", foreign_keys=[library_id])
+    book = relationship("Book", back_populates="libraries")
+    library = relationship("Library", back_populates="books")
 
 
 # TODO:
@@ -61,4 +64,3 @@ class LibraryBooks(Base):
 ## Schema - LibraryBookRequestSchema
 # class LibraryBookRequestSchema(BaseModel):
 #   book_ids: list[uuid]
-"""

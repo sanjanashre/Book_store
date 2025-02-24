@@ -41,7 +41,7 @@ class RetrieveBooksSchema(BaseBookSchema):
         )
 
 
-"""class LibraryRequestSchema(BaseModel):
+class LibraryRequestSchema(BaseModel):
     name: str
     address_line_one: str
     address_line_two: str
@@ -51,15 +51,11 @@ class RetrieveBooksSchema(BaseBookSchema):
     zip_code: int
 
 
-class AddLibrarySchema(LibraryRequestSchema):
-    pass
-
-
 class RetrieveLibrarySchema(LibraryRequestSchema):
     id: UUID
 
    #Schemas for adding book in the Library
-   
+ 
 
 
 class LibraryBookRequestSchema(BaseModel):
@@ -68,9 +64,9 @@ class LibraryBookRequestSchema(BaseModel):
 
 class AddLibraryBookSchema(LibraryBookRequestSchema):
     book_id: list[UUID]
+    
 
 
 class RetrieveLibraryBookSchema(BaseModel):
     id: UUID
     book: RetrieveBooksSchema
-"""

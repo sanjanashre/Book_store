@@ -3,14 +3,13 @@ from sqlalchemy.orm import Session
 from typing import List
 from books_store.services.update_book import UpdateBookService
 from books_store.database import get_db
-from books_store.schemas import AddBookRequestSchema, BaseDetailSchema,RetrieveBooksSchema,BaseBookSchema,AddLibraryBookSchema, RetrieveLibraryBookSchema
+from books_store.schemas import AddBookRequestSchema,BaseDetailSchema,RetrieveBooksSchema,BaseBookSchema,AddLibraryBookSchema, RetrieveLibraryBookSchema,LibraryRequestSchema,RetrieveLibrarySchema
 from books_store.services.add_book import AddBookService
 from books_store.services.retrieve_book import RetrieveBookDetails,RetrieveAllBooks
 from books_store.services.delete_book import DeleteBook
-from books_store.schemas import AddLibrarySchema,RetrieveLibrarySchema
 from books_store.library_services.add_library import AddLibrary
 from books_store.library_services.retrieve_library import RetrieveLibraryDetails
-
+from books_store.library_book_services.add_book_library import AddLibraryBook
 router = APIRouter()
 
 
@@ -148,51 +147,52 @@ def delete_book(book_id:str, db: Session = Depends(get_db)):
     return delete_Book_Service.run()  
 
 
+
+
+@router.get("/library/{library_id}",response_model=RetrieveLibrarySchema)
+def retrieve_library(library_id:str,db:Session=Depends(get_db)):
+    #retrieve details library details
+   
+    retrieve_library=RetrieveLibraryDetails(session=db,library_id=library_id)
+    get_library =retrieve_library.run()  
     
+    return get_library
 
 
 
-@router.post("/library", response_model=AddLibrarySchema)
-def add_library(payload:AddLibrarySchema,db:session=Depends(get_db)):
+@router.post("/library", response_model=LibraryRequestSchema)
+def add_library(payload:LibraryRequestSchema,db:Session=Depends(get_db)):
     # Adds library details
     
 
     add_library=AddLibrary(session=db,payload=payload)
-    add_library.add_library_run()
+    new_library=add_library.add_library_run()
+
 
     try:
         db.commit()
     except:
         raise HTTPException(status_code=404,detail="Library is not added")
+    
+    return new_library
 
-
-@router.post("/library",response_model=RetrieveLibrarySchema)
-def retrieve_library(library_id,payload:RetrieveLibrarySchema,db:session=Depends(get_db)):
-    #retrieve details library details
-   
-    retrieve_library=RetrieveLibraryDetails(session=db,payload=payload,library_id=library_id)
-    retrieve_library.run()
-
-
-@router.post("/library_books",response_model=AddLibraryBookSchema)
-def add_library_books ( payload:RetrieveLibrarySchema,db:session=Depends(get_db)):
-
-    add_library_book=AddLibrary(session=db,payload=payload),
-    add_library_book.add_library_run()
+    
+@router.post("/libraries/{library_id}/books",response_model=AddLibraryBookSchema)
+def add_library_books(payload:AddLibraryBookSchema,db:Session=Depends(get_db)):
+    add_library_book=AddLibraryBook(session=db,payload=payload),
+    add_library_book.run()
 
     try:
         db.commit()
     except:
         raise HTTPException(status_code=404,detail="library not found")
     
-@router.post("/libraries/{library_id}/books",response_model=AddLibraryBookSchema)
-def add_library_books():
-    pass
-
 
 @router.get("/libraries/{library_id}/books",response_model=list[RetrieveLibraryBookSchema])
-def list_library_books():
-    pass
+def list_library_books(library_id:str,db:Session=Depends(get_db)):
+    retrieve_library_book = RetrieveAllBooks(session=db ,library_id=library_id)
+    return retrieve_library_book.run()
+
 
 """[
     {
