@@ -19,7 +19,7 @@ class Book(Base):
     price = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
 
-    libraries = relationship("LibraryBooks", back_populates="book")
+    #libraries = relationship("LibraryBooks", back_populates="book")
 
 class Library(Base):
     __tablename__ = "libraries"
@@ -33,7 +33,9 @@ class Library(Base):
     country = Column(String, nullable=False)
     zip_code = Column(Integer, nullable=False)
 
-    books = relationship("LibraryBooks", back_populates="library")
+    
+
+    #books = relationship("LibraryBooks", back_populates="library")
 class LibraryBooks(Base):
     __tablename__ = "library_books"
 
@@ -41,10 +43,11 @@ class LibraryBooks(Base):
     book_id = Column(UUID(as_uuid=True), ForeignKey("books.id"), nullable=False)
     library_id = Column(UUID(as_uuid=True), ForeignKey("libraries.id"), nullable=False)
 
-    # book = relationship("Book", foreign_keys=[book_id])
-    #library = relationship("Library", foreign_keys=[library_id])
-    book = relationship("Book", back_populates="libraries")
-    library = relationship("Library", back_populates="books")
+    book = relationship("Book", foreign_keys=[book_id])
+    library = relationship("Library", foreign_keys=[library_id])
+
+    #book = relationship("Book", back_populates="libraries")
+    #library = relationship("Library", back_populates="books")
 
 
 # TODO:

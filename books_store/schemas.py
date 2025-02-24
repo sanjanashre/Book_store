@@ -42,6 +42,8 @@ class RetrieveBooksSchema(BaseBookSchema):
 
 
 class LibraryRequestSchema(BaseModel):
+    """schemas for library 
+    """
     name: str
     address_line_one: str
     address_line_two: str
@@ -52,21 +54,25 @@ class LibraryRequestSchema(BaseModel):
 
 
 class RetrieveLibrarySchema(LibraryRequestSchema):
+    """Schemas for retrieve a Library"""
     id: UUID
 
-   #Schemas for adding book in the Library
+   
  
 
 
 class LibraryBookRequestSchema(BaseModel):
+    
     id: UUID
 
 
-class AddLibraryBookSchema(LibraryBookRequestSchema):
-    book_id: list[UUID]
-    
+class AddLibraryBookSchema(BaseModel):
+    """Schema for adding books into a library"""
+
+    book_ids: list[UUID]
 
 
 class RetrieveLibraryBookSchema(BaseModel):
+    """retrieve books from schema"""
     id: UUID
     book: RetrieveBooksSchema

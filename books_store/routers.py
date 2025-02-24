@@ -10,6 +10,7 @@ from books_store.services.delete_book import DeleteBook
 from books_store.library_services.add_library import AddLibrary
 from books_store.library_services.retrieve_library import RetrieveLibraryDetails
 from books_store.library_book_services.add_book_library import AddLibraryBook
+from books_store.library_book_services.retrieve_book_library import RetrieveAllLibraryBooks
 router = APIRouter()
 
 
@@ -151,7 +152,19 @@ def delete_book(book_id:str, db: Session = Depends(get_db)):
 
 @router.get("/library/{library_id}",response_model=RetrieveLibrarySchema)
 def retrieve_library(library_id:str,db:Session=Depends(get_db)):
-    #retrieve details library details
+    """
+    Retrieves details of a library by its ID.
+
+    Args:
+        library_id (str): The unique identifier of the library.
+        db (Session): The database session.
+
+    Returns:
+        RetrieveLibrarySchema: Library details if found.
+
+    Raises:
+        HTTPException: If the library is not found.
+    """
    
     retrieve_library=RetrieveLibraryDetails(session=db,library_id=library_id)
     get_library =retrieve_library.run()  
@@ -162,7 +175,19 @@ def retrieve_library(library_id:str,db:Session=Depends(get_db)):
 
 @router.post("/library", response_model=LibraryRequestSchema)
 def add_library(payload:LibraryRequestSchema,db:Session=Depends(get_db)):
-    # Adds library details
+    """
+    Adds a new library to the database.
+
+    Args:
+        payload (LibraryRequestSchema): The library details provided by the user.
+        db (Session): The SQLAlchemy database session.
+
+    Returns:
+        LibraryRequestSchema: The newly created library details.
+
+    Raises:
+        HTTPException: If the library cannot be added.
+    """
     
 
     add_library=AddLibrary(session=db,payload=payload)
@@ -177,9 +202,23 @@ def add_library(payload:LibraryRequestSchema,db:Session=Depends(get_db)):
     return new_library
 
     
-@router.post("/libraries/{library_id}/books",response_model=AddLibraryBookSchema)
-def add_library_books(payload:AddLibraryBookSchema,db:Session=Depends(get_db)):
-    add_library_book=AddLibraryBook(session=db,payload=payload),
+@router.post("/libraries/{library_id}/books")
+def add_library_books(library_id:str,payload:AddLibraryBookSchema,db:Session=Depends(get_db)):
+    """
+    Adds a book to a specific library.
+
+    Args:
+        library_id (str): The unique identifier of the library where the book will be added.
+        payload (AddLibraryBookSchema): The book details to be added.
+        db (Session): The SQLAlchemy database session.
+
+    Returns:
+        dict: A success message indicating that the book was added.
+
+    Raises:
+        HTTPException (404): If the library is not found or an error occurs while committing the transaction.
+    """
+    add_library_book=AddLibraryBook(session=db,payload=payload,library_id=library_id)
     add_library_book.run()
 
     try:
@@ -187,24 +226,24 @@ def add_library_books(payload:AddLibraryBookSchema,db:Session=Depends(get_db)):
     except:
         raise HTTPException(status_code=404,detail="library not found")
     
+    return BaseDetailSchema(detail='books have been added to the library')
+
 
 @router.get("/libraries/{library_id}/books",response_model=list[RetrieveLibraryBookSchema])
 def list_library_books(library_id:str,db:Session=Depends(get_db)):
-    retrieve_library_book = RetrieveAllBooks(session=db ,library_id=library_id)
+    """
+    Retrieves all books associated with a specific library.
+
+    Args:
+        library_id (str): The unique identifier of the library.
+        db (Session): The SQLAlchemy database session.
+
+    Returns:
+        list[RetrieveLibraryBookSchema]: A list of books available in the specified library.
+
+    Raises:
+        HTTPException (404): If no books are found for the given library.
+    """
+    retrieve_library_book = RetrieveAllLibraryBooks(session=db ,library_id=library_id)
     return retrieve_library_book.run()
 
-
-"""[
-    {
-        id: UUID
-        book: RetrieveBooksSchema
-    },
-{
-        id: UUID
-        book: RetrieveBooksSchema
-    },
-{
-        id: UUID
-        book: RetrieveBooksSchema
-    }
-]"""
