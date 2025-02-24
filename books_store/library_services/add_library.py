@@ -6,7 +6,7 @@ from books_store.schemas import AddLibrarySchema
 
 class AddLibrary:
 
-<<<<<<< HEAD
+
     def __init__(self,session:Session,payload:AddLibrarySchema) ->None:
         """Constructor for Library
         """
@@ -24,7 +24,7 @@ class AddLibrary:
             zip_code= self.payload.zip_code  
             )
         
-=======
+
     def __init__(self, session: Session, payload: AddLibrarySchema) -> None:
         """Constructor for Library"""
         self.session = session
@@ -41,6 +41,6 @@ class AddLibrary:
             country=self.payload.country,
             zip_code=self.payload.zip_code,
         )
->>>>>>> 1cef5bfda26d6bf4d2171ba84432584f7a69a179
+
         self.session.add(library)
         self.session.refresh()

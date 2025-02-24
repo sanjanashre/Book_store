@@ -21,11 +21,11 @@ class AddBookRequestSchema(BaseBookSchema):
 
 
 class RetrieveBooksSchema(BaseBookSchema):
-    id: UUID
+    id: UUID4
     created_at: datetime
 
     class Config:
-        from_attribute = True
+        from_attributes = True
 
     @classmethod
     def from_orm(cls, obj):
@@ -41,7 +41,7 @@ class RetrieveBooksSchema(BaseBookSchema):
         )
 
 
-class LibraryRequestSchema(BaseModel):
+"""class LibraryRequestSchema(BaseModel):
     name: str
     address_line_one: str
     address_line_two: str
@@ -58,8 +58,8 @@ class AddLibrarySchema(LibraryRequestSchema):
 class RetrieveLibrarySchema(LibraryRequestSchema):
     id: UUID
 
-    """Schemas for adding book in the Library
-    """
+   #Schemas for adding book in the Library
+   
 
 
 class LibraryBookRequestSchema(BaseModel):
@@ -73,3 +73,4 @@ class AddLibraryBookSchema(LibraryBookRequestSchema):
 class RetrieveLibraryBookSchema(BaseModel):
     id: UUID
     book: RetrieveBooksSchema
+"""

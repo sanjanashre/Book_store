@@ -11,7 +11,7 @@ import uuid
 class Book(Base):
     __tablename__ = "books"
 
-    id = Column(String(255), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = Column(String, nullable=False)
     author = Column(String, nullable=False)
     published_year = Column(Integer, nullable=False)
@@ -20,7 +20,7 @@ class Book(Base):
     created_at = Column(DateTime, default=datetime.now)
 
 
-class Library(Base):
+"""class Library(Base):
     __tablename__ = "libraries"
 
     id = Column(String(225), primary_key=True, default=uuid.uuid4)
@@ -61,3 +61,4 @@ class LibraryBooks(Base):
 ## Schema - LibraryBookRequestSchema
 # class LibraryBookRequestSchema(BaseModel):
 #   book_ids: list[uuid]
+"""

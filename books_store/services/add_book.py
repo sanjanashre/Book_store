@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from books_store.models import Book
-from books_store.schemas import AddBookRequestSchema
+from books_store.schemas import BaseBookSchema
 
 class AddBookService:
     """
@@ -9,7 +9,8 @@ class AddBookService:
     """
 
     def __init__(self, session: Session,
-                 payload: AddBookRequestSchema) -> None:
+                 payload: BaseBookSchema) -> None:
+        
         """
         Constructor for AddBookService
         """
@@ -28,4 +29,6 @@ class AddBookService:
             price=self.payload.price,
         )
         self.session.add(book)
-        self.session.refresh()
+        self.session.commit()
+        self.session.refresh(book)
+        return book
